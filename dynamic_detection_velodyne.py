@@ -16,13 +16,13 @@ from sparse_conv import sparse_conv
 tf.reset_default_graph()
 
 #dir_data = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/imgs/"
-dir_data = "data/imgs/"
+dir_data = "../data/imgs/"
 dir_imgs_training = dir_data + "training/"
 dir_labels_training = dir_data + "labels_training/"
 dir_imgs_testing = dir_data + "testing/"
 dir_records = dir_data + "records/"
 #path_model = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
-path_model = "data/models/conv_dyn_velodyne.ckpt"
+path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
 epochs = 30
