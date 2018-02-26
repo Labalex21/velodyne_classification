@@ -2,8 +2,8 @@
 
 from __future__ import division, print_function, absolute_import
 
-from tflearn.activations import leaky_relu as lrelu
 from tflearn import conv_2d as conv, conv_2d_transpose as deconv,max_pool_2d as maxpool,dropout
+from tflearn.activations import leaky_relu as lrelu
 import tensorflow as tf
 import time
 import file_handler as fh
