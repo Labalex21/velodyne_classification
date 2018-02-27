@@ -150,7 +150,7 @@ print("number_batches: ",number_batches)
 output,mask = create_network(keep_prob, x, labels)
 
 # loss
-loss = tf.reduce_mean(tf.pow(x - output, 2))
+loss = tf.reduce_mean(tf.pow(labels - output, 2))
 
 # optimizer
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
