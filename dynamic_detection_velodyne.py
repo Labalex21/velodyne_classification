@@ -7,7 +7,7 @@ from tflearn.activations import leaky_relu as lrelu
 import tensorflow as tf
 import time
 import file_handler as fh
-import cv2
+#import cv2
 import numpy as np
 from sparse_conv import sparse_conv
 
@@ -132,10 +132,10 @@ def train():
                           "| current los:",current_loss,
                           "| El. time: ", "{:.2f}".format(elapsed), "s",
                           "| Batch time: ", "{:.2f}".format(elapsed2), "s")
-                    path = "D:/DeepLearning/results/classification/tmp/image_" + str(e+1) + "_" + str(i) + ".jpg"
-                    cv2.imwrite(path, pred[0]*255)
-                    path_mask = "D:/DeepLearning/results/classification/tmp/mask_" + str(e+1) + "_" + str(i) + ".jpg"
-                    cv2.imwrite(path_mask, mask_values[0]*255)
+#                    path = "D:/DeepLearning/results/classification/tmp/image_" + str(e+1) + "_" + str(i) + ".jpg"
+                   # cv2.imwrite(path, pred[0]*255)
+#                    path_mask = "D:/DeepLearning/results/classification/tmp/mask_" + str(e+1) + "_" + str(i) + ".jpg"
+                    #cv2.imwrite(path_mask, mask_values[0]*255)
                     
          
         coord.request_stop()
