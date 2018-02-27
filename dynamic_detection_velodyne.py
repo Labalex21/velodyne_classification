@@ -130,7 +130,7 @@ def train():
                 if i % 20 == 0:
                     print("epoch {}/{}".format(e+1,epochs),
                           "| batch: {}/{}".format(i+1,total_batch),
-                          "| current los:",current_loss,
+                          "| current loss:",current_loss,
                           "| El. time: ", "{:.2f}".format(elapsed), "s",
                           "| Batch time: ", "{:.2f}".format(elapsed2), "s")
                     
