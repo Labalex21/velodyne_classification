@@ -25,7 +25,7 @@ dir_records = dir_data + "records/"
 path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
-epochs = 30
+epochs = 1
 batch_size = 30
 
 # images parameters
@@ -104,6 +104,7 @@ def create_network(keep_prob,x,labels):
     return output, mask
 
 def train():
+    print("start training...")
     with tf.Session()  as sess:
         sess.run(tf.global_variables_initializer())
         sess.run(tf.local_variables_initializer())
@@ -116,26 +117,22 @@ def train():
         threads = tf.train.start_queue_runners(coord=coord)
         
         total_batch = int(number_batches/batch_size)
+        print("total_batch:",total_batch)
         start = time.time()
         for e in range(epochs):
+            print("epoch",e)
             for i in range(total_batch):
                 start2 = time.time()
                 current_loss,_,img,pred, mask_values = sess.run([loss, optimizer,x, output, mask])
-                
-                
+                            
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
-#                    print(sh1,sh2,sh3,sh4,sh5,sh6,sh7,sh8)
                     print("epoch {}/{}".format(e+1,epochs),
                           "| batch: {}/{}".format(i+1,total_batch),
                           "| current los:",current_loss,
                           "| El. time: ", "{:.2f}".format(elapsed), "s",
                           "| Batch time: ", "{:.2f}".format(elapsed2), "s")
-#                    path = "D:/DeepLearning/results/classification/tmp/image_" + str(e+1) + "_" + str(i) + ".jpg"
-                   # cv2.imwrite(path, pred[0]*255)
-#                    path_mask = "D:/DeepLearning/results/classification/tmp/mask_" + str(e+1) + "_" + str(i) + ".jpg"
-                    #cv2.imwrite(path_mask, mask_values[0]*255)
                     
          
         coord.request_stop()
