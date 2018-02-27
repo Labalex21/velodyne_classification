@@ -26,7 +26,7 @@ path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
 epochs = 200
-batch_size = 30
+batch_size = 100
 
 # images parameters
 max_dist = 40
