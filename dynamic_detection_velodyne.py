@@ -37,7 +37,7 @@ label_shape = image_shape
 
 # network parameters
 keep_prob = 0.5
-learning_rate = 0.001
+learning_rate = 0.0001
 
 def create_network(keep_prob,x,labels):
     print(x.get_shape())
