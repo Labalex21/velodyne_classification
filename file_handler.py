@@ -29,9 +29,9 @@ def write_tfrecord(writer, input, output):
     for i in range(input.shape[0]):
         
         # print how many images are saved every 100 images
-        if not i % 20:
-            print('Train data: {}/{}'.format(i, input.shape[0]))
-            sys.stdout.flush()
+#        if not i % 20:
+#            print('Train data: {}/{}'.format(i, input.shape[0]))
+#            sys.stdout.flush()
         
         img1 = input[i]
         img2 = output[i]
@@ -43,8 +43,8 @@ def write_tfrecord(writer, input, output):
         writer.write(example.SerializeToString())
 
 def read_tfrecord(folder, image_shape, batch_size = 100, num_epochs = 100):
-    feature = {'train/image': tf.FixedLenFeature([], tf.string),
-               'train/label': tf.FixedLenFeature([], tf.string)}
+    feature = {'train/input': tf.FixedLenFeature([], tf.string),
+               'train/output': tf.FixedLenFeature([], tf.string)}
         
     info_filenames = glob.glob(os.path.join(folder, '*.info'))
     number_batches = 0
@@ -64,7 +64,7 @@ def read_tfrecord(folder, image_shape, batch_size = 100, num_epochs = 100):
     features = tf.parse_single_example(serialized_example, features=feature)
     
     # Convert the image data from string back to the numbers
-    image = tf.decode_raw(features['train/image'], tf.float64)
+    image = tf.decode_raw(features['train/input'], tf.float64)
     image = tf.to_float(image)
     
     # Reshape image data into the original shape
@@ -72,7 +72,7 @@ def read_tfrecord(folder, image_shape, batch_size = 100, num_epochs = 100):
     image = tf.to_float(image)
     
     # Cast label data into bool
-    label = tf.decode_raw(features['train/label'], tf.int32)
+    label = tf.decode_raw(features['train/output'], tf.float64)
     label = tf.multiply(label-1,-1)
     label = tf.reshape(label, image_shape, name='reshape_label')
     label = tf.to_float(label)

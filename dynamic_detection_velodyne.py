@@ -25,7 +25,7 @@ dir_records = dir_data + "records/"
 path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
-epochs = 1
+epochs = 200
 batch_size = 30
 
 # images parameters
@@ -144,7 +144,7 @@ def train():
 
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
 
-print("x:",x)
+print("number_batches: ",number_batches)
 
 #output,mask = create_network(keep_prob, x, tf.ones([batch_size, 31, 1160]))
 output,mask = create_network(keep_prob, x, labels)
