@@ -2,27 +2,25 @@
 
 from __future__ import division, print_function, absolute_import
 
-from tflearn import conv_2d as conv, conv_2d_transpose as deconv,max_pool_2d as maxpool,dropout
-from tflearn.activations import leaky_relu as lrelu
+import tflearn
 import tensorflow as tf
 import time
 import file_handler as fh
 #import cv2
 import numpy as np
-from sparse_conv import sparse_conv
 
 
 # Reset graph
 tf.reset_default_graph()
 
-#dir_data = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/imgs/"
-dir_data = "../data/imgs/"
+dir_data = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/imgs/"
+#dir_data = "../data/imgs/"
 dir_imgs_training = dir_data + "training/"
 dir_labels_training = dir_data + "labels_training/"
 dir_imgs_testing = dir_data + "testing/"
 dir_records = dir_data + "records/"
-#path_model = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
-path_model = "../data/models/conv_dyn_velodyne.ckpt"
+path_model = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
+#path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
 epochs = 200
@@ -39,69 +37,45 @@ label_shape = image_shape
 keep_prob = 0.5
 learning_rate = 0.0001
 
-def create_network(keep_prob,x,labels):
-    print(x.get_shape())
-    x = tf.reshape(x, [tf.shape(x)[0], tf.shape(x)[1], tf.shape(x)[2], 1], name='reshape_image1')
-    mask = tf.reshape(labels, [tf.shape(labels)[0], tf.shape(labels)[1], tf.shape(labels)[2], 1], name='reshape_mask1')
-    network = tf.to_float(x)
-    print(network.get_shape())
+n_features = 32
+patch_size = 3
+strides = [1, 1, 1, 1]
+
+def create_network(x):
+    print('input: ',x.get_shape())
+    x = tf.reshape(x, [tf.shape(x)[0], height, width, 1], name='reshape_image1')
+    x = tf.to_float(x)/max_dist
+    print('x:     ',x.get_shape())
     
-#     sparse convolutions
-    network, mask = sparse_conv(x, mask, filters = 32, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network, mask = sparse_conv(network, mask, filters = 32, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network = maxpool(network, 2, strides=[2,2], name='maxpool1')
-    network = lrelu(network)
-    mask = maxpool(mask, 2, strides=[2,2], name='maxpool_mask2')
-    print(network.get_shape())
-
-    network, mask = sparse_conv(network, binary_mask=mask, filters = 64, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network, mask = sparse_conv(network, mask, filters = 64, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network = maxpool(network, 2, strides=[2,2], name='maxpool2')
-    network = lrelu(network)
-    mask = maxpool(mask, 2, strides=[2,2], name='maxpool_mask2')
+    conv1 = tflearn.conv_2d(x,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    print('conv1: ', conv1.get_shape())
     
-    print(network.get_shape())
-    network, mask = sparse_conv(network, mask, filters = 128, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network, mask = sparse_conv(network, mask, filters = 128, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network, mask = sparse_conv(network, mask, filters = 128, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network = maxpool(network, 2, strides=[2,2], name='maxpool3')
-    network = lrelu(network)
-    mask = maxpool(mask, 2, strides=[2,2], name='maxpool_mask3') 
-    print(network.get_shape())
+    conv2 = tflearn.conv_2d(conv1,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    print('conv2: ', conv2.get_shape())
+    
+    conv3 = tflearn.conv_2d(conv2,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    print('conv3: ', conv3.get_shape())
+    
+    conv4 = tflearn.conv_2d(conv3,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    print('conv4: ', conv4.get_shape())
+    
+    
+    tconv1 = tflearn.conv_2d_transpose(conv4,n_features,patch_size,conv3.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+    print('tconv1:', tconv1.get_shape())
+    
+    tconv2 = tflearn.conv_2d_transpose(tconv1,n_features,patch_size,conv2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+    print('tconv2:', tconv2.get_shape())
+    
+    tconv3 = tflearn.conv_2d_transpose(tconv2,n_features,patch_size,conv1.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+    print('tconv3:', tconv3.get_shape())
+    
+    tconv4 = tflearn.conv_2d_transpose(tconv3,1,patch_size,x.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+    print('tconv4:', tconv4.get_shape())
 
-    network, mask = sparse_conv(network, mask, filters = 256, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network, mask = sparse_conv(network, mask, filters = 256, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network, mask = sparse_conv(network, mask, filters = 256, kernel_size = 3, strides = 1)
-    network = lrelu(network)
-    network = maxpool(network, 2, strides=[2,2], name='maxpool4')
-    network = lrelu(network)
-    mask = maxpool(mask, 2, strides=[2,2], name='maxpool_mask4')
-    print(network.get_shape())    
+    output = tf.reshape(tconv4,[-1,height,width])
+    print('output:', tconv4.get_shape())
 
-    #deconvolution
-    network = deconv(network, 112, 1,[int(np.ceil(height/8)),int(width/8)], activation='relu', strides=[2,2], name='deconv1')
-    print(network.get_shape())
-    network = dropout(network,keep_prob)
-    network = deconv(network,64, 1,[int(height/4),int(width/4)], activation='relu', strides=[2,2], name='deconv2')
-    print(network.get_shape())
-    network = dropout(network, keep_prob)
-    network = deconv(network, 32, 1,[int(height/2),int(width/2)], activation='relu', strides=[2,2], name='deconv3')
-    print(network.get_shape())
-    network = dropout(network, keep_prob)
-    network = deconv(network, 1, 1,[height,width], activation='relu', strides=[2,2], name='deconv4')
-    output = tf.reshape(network, [tf.shape(network)[0], tf.shape(network)[1], tf.shape(network)[2]], name='reshape2')
-    print(output.get_shape())
-
-    return output, mask
+    return output
 
 def train():
     print("start training...")
@@ -123,14 +97,14 @@ def train():
             print("epoch",e)
             for i in range(total_batch):
                 start2 = time.time()
-                current_loss,_,img,pred, mask_values = sess.run([loss, optimizer,x, output, mask])
+                current_loss,img,pred = sess.run([loss,x, output])
                             
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
                     print("epoch {}/{}".format(e+1,epochs),
                           "| batch: {}/{}".format(i+1,total_batch),
-                          "| current loss:",current_loss,
+                          "| current los:",current_loss,
                           "| El. time: ", "{:.2f}".format(elapsed), "s",
                           "| Batch time: ", "{:.2f}".format(elapsed2), "s")
                     
@@ -143,11 +117,9 @@ def train():
         print("Model saved in file: %s" % save_path)
 
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
-
 print("number_batches: ",number_batches)
 
-#output,mask = create_network(keep_prob, x, tf.ones([batch_size, 31, 1160]))
-output,mask = create_network(keep_prob, x, labels)
+output = create_network(x)
 
 # loss
 loss = tf.reduce_mean(tf.pow(labels - output, 2))
