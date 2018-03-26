@@ -14,6 +14,8 @@ tf.reset_default_graph()
 
 # log file
 log_file = open("../data/log_file.txt","w")
+log_file.write("start\n")
+log_file.write('start\n')
 
 #dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
 #dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
