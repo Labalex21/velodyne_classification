@@ -15,12 +15,7 @@ tf.reset_default_graph()
 # log file
 log_file = open("../data/log_file.txt","w")
 log_file.write("start\n")
-log_file.write('start\n')
-
-test_file = open("../data/log_file_test.txt","w")
-test_file.write("start\n")
-test_file.write('start\n')
-test_file.close()
+log_file.flush()
 
 #dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
 #dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
@@ -141,6 +136,7 @@ def train():
                       
                 current_string = "epoch: " + str(e) + " iteration: " + str(i)
                 log_file.write(current_string)
+                log_file.flush()
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
@@ -167,10 +163,12 @@ def train():
         print("Model saved in file: %s" % save_path)
 
 log_file.write("create network")
+log_file.flush()
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
 print("number_batches: ",number_batches)
 current_string = "number batches: " + str(number_batches)
 log_file.write(current_string)
+log_file.flush()
 
 output = create_network(x)
 
@@ -181,6 +179,7 @@ loss = tf.reduce_mean(tf.pow(labels - output, 2))
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
 
 log_file.write("train")
+log_file.flush()
 train()
 log_file.close()
 #test_prediction()
