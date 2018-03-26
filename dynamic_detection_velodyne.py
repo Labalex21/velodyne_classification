@@ -6,20 +6,20 @@ import tflearn
 import tensorflow as tf
 import time
 import file_handler as fh
-#import cv2
+import cv2
 import numpy as np
-
 
 # Reset graph
 tf.reset_default_graph()
 
-dir_data = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/imgs/"
+dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
+dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
 #dir_data = "../data/imgs/"
 dir_imgs_training = dir_data + "training/"
 dir_labels_training = dir_data + "labels_training/"
 dir_imgs_testing = dir_data + "testing/"
 dir_records = dir_data + "records/"
-path_model = "X:/Proc/Velodyne_Puck/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
+path_model = "D:/Velodyne/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
 #path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
@@ -35,7 +35,7 @@ label_shape = image_shape
 
 # network parameters
 keep_prob = 0.5
-learning_rate = 0.0001
+learning_rate = 0.005
 
 n_features = 32
 patch_size = 3
@@ -44,36 +44,65 @@ strides = [1, 1, 1, 1]
 def create_network(x):
     print('input: ',x.get_shape())
     x = tf.reshape(x, [tf.shape(x)[0], height, width, 1], name='reshape_image1')
+    print(x)
     x = tf.to_float(x)/max_dist
+    print(x)
     print('x:     ',x.get_shape())
     
-    conv1 = tflearn.conv_2d(x,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    conv1 = tflearn.conv_2d(x,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv1')
     print('conv1: ', conv1.get_shape())
+    maxPool1 = tflearn.layers.conv.max_pool_2d (conv1, 2, padding='same')
+    print('mPool1:', maxPool1.get_shape())
     
-    conv2 = tflearn.conv_2d(conv1,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    conv2 = tflearn.conv_2d(maxPool1,n_features*2,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv2')
     print('conv2: ', conv2.get_shape())
+    maxPool2 = tflearn.layers.conv.max_pool_2d (conv2, 2, padding='same')
+    print('mPool2:', maxPool2.get_shape())
     
-    conv3 = tflearn.conv_2d(conv2,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    conv3 = tflearn.conv_2d(maxPool2,n_features*4,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv3')
     print('conv3: ', conv3.get_shape())
+#    maxPool3 = tflearn.layers.conv.max_pool_2d (conv3, 2, padding='same')
+#    print('mPool3:', maxPool3.get_shape())
     
-    conv4 = tflearn.conv_2d(conv3,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
-    print('conv4: ', conv4.get_shape())
+#    conv4 = tflearn.conv_2d(maxPool3,n_features*4,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+#    print('conv4: ', conv4.get_shape())
+#    maxPool4 = tflearn.layers.conv.max_pool_2d (conv4, 2, padding='same')
+#    print('mpool4:', conv4.get_shape())
+#    
+#    
+#    fc1 = tf.reshape(x, [-1, height * width * n_features])
+    fc1 = tflearn.fully_connected(conv3, 5000, activation = 'leaky_relu')
+#    print('fc1: ', fc1.get_shape())
+#    #fc1 = tf.reshape(x, [-1, height, width, n_features])
+#    print('fc1: ', fc1.get_shape())
     
+#    last = fully_connected(tfc2, tf.transpose(weights['wfc1']), biases['b3_dec'])
+#    # tfc2 = tf.reshape(tfc2, [-1, 1160*2, 1, n_features])
+#    last = tf.reshape(last, [-1, 1160, 1, n_features])
+#    print('tfc3: ', last.get_shape())
     
-    tconv1 = tflearn.conv_2d_transpose(conv4,n_features,patch_size,conv3.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
-    print('tconv1:', tconv1.get_shape())
+#    upsample1 = tflearn.upsample_2d(maxPool4,2)
+#    print('usamp1:', upsample1.get_shape())
+#    tconv1 = tflearn.conv_2d_transpose(upsample1,n_features*4,patch_size,maxPool3.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+#    print('tconv1:', tconv1.get_shape())
     
-    tconv2 = tflearn.conv_2d_transpose(tconv1,n_features,patch_size,conv2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+#    upsample2 = tflearn.upsample_2d(maxPool3,2)
+#    print('usamp2:', upsample2.get_shape())
+    tconv2 = tflearn.conv_2d_transpose(fc1,n_features*2,patch_size,maxPool2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv2')
     print('tconv2:', tconv2.get_shape())
     
-    tconv3 = tflearn.conv_2d_transpose(tconv2,n_features,patch_size,conv1.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+    upsample3 = tflearn.upsample_2d(tconv2,2)
+    print('usamp3:', upsample3.get_shape())
+    tconv3 = tflearn.conv_2d_transpose(upsample3,n_features*1,patch_size,maxPool1.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv3')
     print('tconv3:', tconv3.get_shape())
     
-    tconv4 = tflearn.conv_2d_transpose(tconv3,1,patch_size,x.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu')
+    upsample4 = tflearn.upsample_2d(tconv3,2)
+    print('usamp4:', upsample4.get_shape())
+    tconv4 = tflearn.conv_2d_transpose(upsample4,1,patch_size,x.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv4')
     print('tconv4:', tconv4.get_shape())
 
     output = tf.reshape(tconv4,[-1,height,width])
-    print('output:', tconv4.get_shape())
+    print('output:', output.get_shape())
 
     return output
 
@@ -97,7 +126,7 @@ def train():
             print("epoch",e)
             for i in range(total_batch):
                 start2 = time.time()
-                current_loss,img,pred = sess.run([loss,x, output])
+                current_loss,imgs,preds,l = sess.run([loss,x, output, labels])
                             
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
@@ -107,6 +136,14 @@ def train():
                           "| current los:",current_loss,
                           "| El. time: ", "{:.2f}".format(elapsed), "s",
                           "| Batch time: ", "{:.2f}".format(elapsed2), "s")
+                    
+                    for i in range(imgs.shape[0]):
+                        filename_input = dir_test +  str(i) + "_input.png"
+                        filename_labels = dir_test +  str(i) + "_labels.png"
+                        filename_output = dir_test +  str(i)  + "_output.png"
+                        cv2.imwrite(filename_input, imgs[i]*max_dist)
+                        cv2.imwrite(filename_labels, l[i]*255)
+                        cv2.imwrite(filename_output, preds[i]*255)
                     
          
         coord.request_stop()
@@ -126,6 +163,7 @@ loss = tf.reduce_mean(tf.pow(labels - output, 2))
 
 # optimizer
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
+
 
 train()
 #test_prediction()

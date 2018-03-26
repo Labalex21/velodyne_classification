@@ -73,7 +73,7 @@ def read_tfrecord(folder, image_shape, batch_size = 100, num_epochs = 100):
     
     # Cast label data into bool
     label = tf.decode_raw(features['train/output'], tf.float64)
-    label = tf.multiply(label-1,-1)
+    #label = tf.multiply(label-1,-1)
     label = tf.reshape(label, image_shape, name='reshape_label')
     label = tf.to_float(label)
 
