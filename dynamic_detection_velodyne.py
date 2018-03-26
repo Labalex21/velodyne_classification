@@ -12,6 +12,9 @@ import numpy as np
 # Reset graph
 tf.reset_default_graph()
 
+# log file
+log_file = open("../data/log_file.txt","w")
+
 #dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
 #dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
 dir_test = "../data/imgs/result_detection/"
@@ -128,7 +131,9 @@ def train():
             for i in range(total_batch):
                 start2 = time.time()
                 current_loss,imgs,preds,l = sess.run([loss,x, output, labels])
-                            
+                      
+                current_string = "epoch: " + str(e) + " iteration: " + str(i)
+                log_file.write(current_string)
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
@@ -154,8 +159,11 @@ def train():
         save_path = saver.save(sess, path_model)
         print("Model saved in file: %s" % save_path)
 
+log_file.write("create network")
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
 print("number_batches: ",number_batches)
+current_string = "number batches: " + str(number_batches)
+log_file.write(current_string)
 
 output = create_network(x)
 
@@ -165,6 +173,7 @@ loss = tf.reduce_mean(tf.pow(labels - output, 2))
 # optimizer
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
 
-
+log_file.write("train")
 train()
+log_file.close()
 #test_prediction()
