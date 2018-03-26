@@ -134,7 +134,7 @@ def train():
                 start2 = time.time()
                 current_loss,imgs,preds,l = sess.run([loss,x, output, labels])
                       
-                current_string = "epoch: " + str(e) + " iteration: " + str(i)
+                current_string = "epoch: " + str(e) + " iteration: " + str(i) + "\n"
                 log_file.write(current_string)
                 log_file.flush()
                 elapsed = time.time() - start
@@ -162,11 +162,11 @@ def train():
         save_path = saver.save(sess, path_model)
         print("Model saved in file: %s" % save_path)
 
-log_file.write("create network")
+log_file.write("create network\n")
 log_file.flush()
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
 print("number_batches: ",number_batches)
-current_string = "number batches: " + str(number_batches)
+current_string = "number batches: " + str(number_batches) + "\n"
 log_file.write(current_string)
 log_file.flush()
 
@@ -178,7 +178,7 @@ loss = tf.reduce_mean(tf.pow(labels - output, 2))
 # optimizer
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
 
-log_file.write("train")
+log_file.write("train\n")
 log_file.flush()
 train()
 log_file.close()
