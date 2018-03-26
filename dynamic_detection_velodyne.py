@@ -17,6 +17,11 @@ log_file = open("../data/log_file.txt","w")
 log_file.write("start\n")
 log_file.write('start\n')
 
+test_file = open("../data/log_file_test.txt","w")
+test_file.write("start\n")
+test_file.write('start\n')
+test_file.close()
+
 #dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
 #dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
 dir_test = "../data/imgs/result_detection/"
