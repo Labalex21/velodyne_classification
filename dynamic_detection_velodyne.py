@@ -8,12 +8,14 @@ import time
 import file_handler as fh
 import cv2
 import numpy as np
+import datetime as dt
 
 # Reset graph
 tf.reset_default_graph()
 
 # log file
-log_file = open("../data/log_file.txt","w")
+log_filename = "../data/log_" + dt.datetime.now().strftime("%Y%m%d_%H_%M_%S") + ".txt"
+log_file = open(log_filename,"w")
 log_file.write("start\n")
 log_file.flush()
 
