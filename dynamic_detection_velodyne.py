@@ -12,15 +12,16 @@ import numpy as np
 # Reset graph
 tf.reset_default_graph()
 
-dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
-dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
-#dir_data = "../data/imgs/"
+#dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
+#dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
+dir_test = "../data/imgs/result_detection/"
+dir_data = "../data/imgs/"
 dir_imgs_training = dir_data + "training/"
 dir_labels_training = dir_data + "labels_training/"
 dir_imgs_testing = dir_data + "testing/"
 dir_records = dir_data + "records/"
-path_model = "D:/Velodyne/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
-#path_model = "../data/models/conv_dyn_velodyne.ckpt"
+#path_model = "D:/Velodyne/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
+path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
 epochs = 200
@@ -71,7 +72,7 @@ def create_network(x):
 #    
 #    
 #    fc1 = tf.reshape(x, [-1, height * width * n_features])
-    fc1 = tflearn.fully_connected(conv3, 5000, activation = 'leaky_relu')
+#    fc1 = tflearn.fully_connected(conv3, 5000, activation = 'leaky_relu')
 #    print('fc1: ', fc1.get_shape())
 #    #fc1 = tf.reshape(x, [-1, height, width, n_features])
 #    print('fc1: ', fc1.get_shape())
@@ -88,7 +89,7 @@ def create_network(x):
     
 #    upsample2 = tflearn.upsample_2d(maxPool3,2)
 #    print('usamp2:', upsample2.get_shape())
-    tconv2 = tflearn.conv_2d_transpose(fc1,n_features*2,patch_size,maxPool2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv2')
+    tconv2 = tflearn.conv_2d_transpose(conv3,n_features*2,patch_size,maxPool2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv2')
     print('tconv2:', tconv2.get_shape())
     
     upsample3 = tflearn.upsample_2d(tconv2,2)
