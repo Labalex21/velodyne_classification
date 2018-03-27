@@ -148,13 +148,13 @@ def train():
                           "| El. time: ", "{:.2f}".format(elapsed), "s",
                           "| Batch time: ", "{:.2f}".format(elapsed2), "s")
                     
-                    for i in range(imgs.shape[0]):
-                        filename_input = dir_test +  str(i) + "_input.png"
-                        filename_labels = dir_test +  str(i) + "_labels.png"
-                        filename_output = dir_test +  str(i)  + "_output.png"
-                        cv2.imwrite(filename_input, imgs[i]*max_dist)
-                        cv2.imwrite(filename_labels, l[i]*255)
-                        cv2.imwrite(filename_output, preds[i]*255)
+            for i in range(imgs.shape[0]):
+                filename_input = dir_test +  str(i) + "_input.png"
+                filename_labels = dir_test +  str(i) + "_labels.png"
+                filename_output = dir_test +  str(i)  + "_output.png"
+                cv2.imwrite(filename_input, imgs[i]*max_dist)
+                cv2.imwrite(filename_labels, l[i]*255)
+                cv2.imwrite(filename_output, preds[i]*255)
                     
          
         coord.request_stop()
