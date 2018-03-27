@@ -135,13 +135,12 @@ def train():
             for i in range(total_batch):
                 start2 = time.time()
                 current_loss,imgs,preds,l = sess.run([loss,x, output, labels])
-                      
-                current_string = "epoch: " + str(e) + " iteration: " + str(i) + "\n"
-                log_file.write(current_string)
-                log_file.flush()
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
+                    current_string = "epoch: " + str(e+1) + " iteration: " + str(i+1) + "current los: " + str(current_loss) + "\n"
+                    log_file.write(current_string)
+                    log_file.flush()
                     print("epoch {}/{}".format(e+1,epochs),
                           "| batch: {}/{}".format(i+1,total_batch),
                           "| current los:",current_loss,
