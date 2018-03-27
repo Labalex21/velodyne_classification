@@ -62,28 +62,28 @@ def create_network(x):
     maxPool1 = tflearn.layers.conv.max_pool_2d (conv1, 2, padding='same')
     print('mPool1:', maxPool1.get_shape())
     
-    conv2 = tflearn.conv_2d(maxPool1,n_features*2,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv2')
+    conv2 = tflearn.conv_2d(maxPool1,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv2')
     print('conv2: ', conv2.get_shape())
     maxPool2 = tflearn.layers.conv.max_pool_2d (conv2, 2, padding='same')
     print('mPool2:', maxPool2.get_shape())
     
-    conv3 = tflearn.conv_2d(maxPool2,n_features*4,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv3')
+    conv3 = tflearn.conv_2d(maxPool2,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu', name='conv3')
     print('conv3: ', conv3.get_shape())
-#    maxPool3 = tflearn.layers.conv.max_pool_2d (conv3, 2, padding='same')
-#    print('mPool3:', maxPool3.get_shape())
+    maxPool3 = tflearn.layers.conv.max_pool_2d (conv3, 2, padding='same')
+    print('mPool3:', maxPool3.get_shape())
     
-#    conv4 = tflearn.conv_2d(maxPool3,n_features*4,patch_size,strides, padding = 'same', activation = 'leaky_relu')
+    conv4 = tflearn.conv_2d(maxPool3,n_features,patch_size,strides, padding = 'same', activation = 'leaky_relu')
 #    print('conv4: ', conv4.get_shape())
 #    maxPool4 = tflearn.layers.conv.max_pool_2d (conv4, 2, padding='same')
 #    print('mpool4:', conv4.get_shape())
 #    
 #    
-    fc1 = tf.reshape(conv3, [-1, 225 * 4 * n_features*4])
-    fc1 = tflearn.fully_connected(conv3, 225 * 4 * n_features*4, activation = 'leaky_relu')
-#    fc1 = tflearn.fully_connected(fc1, 1000*n_features*4, activation = 'leaky_relu')
+#    fc1 = tflearn.fully_connected(conv3, 225*4*n_features, activation = 'leaky_relu')
+    fc1 = tflearn.fully_connected(conv4, 5000, activation = 'leaky_relu')
+    tfc1 = tflearn.fully_connected(fc1, 225*4*n_features, activation = 'leaky_relu')
     print('fc1: ', fc1.get_shape())
-    fc1 = tf.reshape(fc1, [-1, 225, 4, n_features*4])
-    print('fc1: ', fc1.get_shape())
+    tfc1 = tf.reshape(tfc1, [-1, 225, 4, n_features])
+    print('tfc1: ', tfc1.get_shape())
     
 #    last = fully_connected(tfc2, tf.transpose(weights['wfc1']), biases['b3_dec'])
 #    # tfc2 = tf.reshape(tfc2, [-1, 1160*2, 1, n_features])
@@ -97,12 +97,12 @@ def create_network(x):
     
 #    upsample2 = tflearn.upsample_2d(tconv1,2)
 #    print('usamp2:', upsample2.get_shape())
-    tconv2 = tflearn.conv_2d_transpose(fc1,n_features*2,patch_size,maxPool2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv2')
+    tconv2 = tflearn.conv_2d_transpose(tfc1,n_features,patch_size,maxPool2.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv2')
     print('tconv2:', tconv2.get_shape())
     
     upsample3 = tflearn.upsample_2d(tconv2,2)
     print('usamp3:', upsample3.get_shape())
-    tconv3 = tflearn.conv_2d_transpose(upsample3,n_features*1,patch_size,maxPool1.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv3')
+    tconv3 = tflearn.conv_2d_transpose(upsample3,n_features,patch_size,maxPool1.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv3')
     print('tconv3:', tconv3.get_shape())
     
     upsample4 = tflearn.upsample_2d(tconv3,2)
