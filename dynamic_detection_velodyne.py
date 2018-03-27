@@ -82,7 +82,7 @@ def create_network(x):
     fc1 = tflearn.fully_connected(conv3, 225 * 4 * n_features*4, activation = 'leaky_relu')
 #    fc1 = tflearn.fully_connected(fc1, 1000*n_features*4, activation = 'leaky_relu')
     print('fc1: ', fc1.get_shape())
-    fc1 = tf.reshape(x, [-1, 225, 4, n_features*4])
+    fc1 = tf.reshape(fc1, [-1, 225, 4, n_features*4])
     print('fc1: ', fc1.get_shape())
     
 #    last = fully_connected(tfc2, tf.transpose(weights['wfc1']), biases['b3_dec'])
