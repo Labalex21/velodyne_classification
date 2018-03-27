@@ -14,7 +14,7 @@ import datetime as dt
 tf.reset_default_graph()
 
 # log file
-log_filename = "../data/log_" + dt.datetime.now().strftime("%Y%m%d_%H_%M_%S") + ".txt"
+log_filename = "../data/logs/log_" + dt.datetime.now().strftime("%Y%m%d_%H_%M_%S") + ".txt"
 log_file = open(log_filename,"w")
 log_file.write("start\n")
 log_file.flush()
