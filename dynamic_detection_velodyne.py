@@ -111,6 +111,11 @@ def create_network(x):
     print('tconv4:', tconv4.get_shape())
 
     output = tf.reshape(tconv4,[-1,height,width])
+    #annotation_pred = tf.argmax(conv_t3, dimension=3, name="prediction")
+    #lin_pred = tf.reshape(pred, shape=[-1, nrclass])
+    #lin_y = tf.reshape(y, shape=[-1, nrclass])
+    #cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(lin_pred, lin_y))
+    #https://github.com/sjchoi86/Tensorflow-101/blob/master/notebooks/semseg_basic.ipynb
     print('output:', output.get_shape())
 
     return output
