@@ -177,7 +177,7 @@ log_file.flush()
 output = create_network(x,y)
 
 # loss
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(output, y))
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = output, labels = y))
 #loss = tf.reduce_mean(tf.pow(y - output, 2))
 
 # optimizer
