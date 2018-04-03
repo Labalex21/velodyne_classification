@@ -49,7 +49,7 @@ n_features = 32
 patch_size = 3
 strides = [1, 1, 1, 1]
 
-def create_network(x):
+def create_network(x,y):
     print('input: ',x.get_shape())
     x = tf.reshape(x, [tf.shape(x)[0], height, width, 1], name='reshape_image1')
     print(x)
@@ -107,15 +107,10 @@ def create_network(x):
     
     upsample4 = tflearn.upsample_2d(tconv3,2)
     print('usamp4:', upsample4.get_shape())
-    tconv4 = tflearn.conv_2d_transpose(upsample4,1,patch_size,x.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv4')
+    tconv4 = tflearn.conv_2d_transpose(upsample4,2,patch_size,y.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv4')
     print('tconv4:', tconv4.get_shape())
 
-    output = tf.reshape(tconv4,[-1,height,width])
-    #annotation_pred = tf.argmax(conv_t3, dimension=3, name="prediction")
-    #lin_pred = tf.reshape(pred, shape=[-1, nrclass])
-    #lin_y = tf.reshape(y, shape=[-1, nrclass])
-    #cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(lin_pred, lin_y))
-    #https://github.com/sjchoi86/Tensorflow-101/blob/master/notebooks/semseg_basic.ipynb
+    output = tf.reshape(tconv4,[-1,height,width,2])
     print('output:', output.get_shape())
 
     return output
@@ -141,17 +136,17 @@ def train():
             for i in range(total_batch):
                 start2 = time.time()
                 _,current_loss,imgs,preds,l = sess.run([optimizer,loss,x, output, labels])
+                
+                # Accuracy
+                corr = tf.equal(tf.argmax(imgs,3), tf.argmax(preds, 3)) 
+                accr = tf.reduce_mean(tf.cast(corr, "float"))
+                
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
-                    current_string = "epoch: " + str(e+1) + " iteration: " + str(i+1) + "current los: " + str(current_loss) + "\n"
+                    current_string = "epoch: " + str(e+1) + " iteration: " + str(i+1) + "current los: " + str(current_loss) + " accuracy: " + str(accr) + "\n"
                     log_file.write(current_string)
                     log_file.flush()
-                    print("epoch {}/{}".format(e+1,epochs),
-                          "| batch: {}/{}".format(i+1,total_batch),
-                          "| current los:",current_loss,
-                          "| El. time: ", "{:.2f}".format(elapsed), "s",
-                          "| Batch time: ", "{:.2f}".format(elapsed2), "s")
                     
             for i in range(imgs.shape[0]):
                 filename_input = dir_test +  str(i) + "_input.png"
@@ -172,18 +167,22 @@ def train():
 log_file.write("create network\n")
 log_file.flush()
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
+y = tf.reshape(labels, [tf.shape(labels)[0], height, width, 1], name='reshape_labels')
+y = tf.concat([y, y-1],axis = 3)
 print("number_batches: ",number_batches)
 current_string = "number batches: " + str(number_batches) + "\n"
 log_file.write(current_string)
 log_file.flush()
 
-output = create_network(x)
+output = create_network(x,y)
 
 # loss
-loss = tf.reduce_mean(tf.pow(labels - output, 2))
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(output, y))
+#loss = tf.reduce_mean(tf.pow(y - output, 2))
 
 # optimizer
-optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
+#optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
+optmizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
 log_file.write("train\n")
 log_file.flush()
