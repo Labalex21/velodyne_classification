@@ -110,7 +110,7 @@ def create_network(x,y):
     tconv4 = tflearn.conv_2d_transpose(upsample4,2,patch_size,y.get_shape().as_list()[1:4], padding = 'same', activation = 'leaky_relu', name='deconv4')
     print('tconv4:', tconv4.get_shape())
 
-    output = tf.reshape(tconv4,[-1,height,width,2])
+    output = tf.nn.softmax(tf.reshape(tconv4,[-1,height,width,2]), name="softmax_tensor")
     print('output:', output.get_shape())
 
     return output
