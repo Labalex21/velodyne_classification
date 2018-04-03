@@ -135,16 +135,12 @@ def train():
             print("epoch",e)
             for i in range(total_batch):
                 start2 = time.time()
-                _,current_loss,imgs,preds,l = sess.run([optimizer,loss,x, output, y])
-                
-                # Accuracy
-                corr = tf.equal(tf.argmax(y,3), tf.argmax(preds, 3)) 
-                accr = tf.reduce_mean(tf.cast(corr, "float"))
+                _,current_loss,imgs,preds,l, accuracy = sess.run([optimizer,loss,x, output, y, accr])
                 
                 elapsed = time.time() - start
                 elapsed2 = time.time() - start2
                 if i % 20 == 0:
-                    current_string = "epoch: " + str(e+1) + " iteration: " + str(i+1) + "current los: " + str(current_loss) + " accuracy: " + str(accr) + "\n"
+                    current_string = "epoch: " + str(e+1) + " iteration: " + str(i+1) + "current los: " + str(current_loss) + " accuracy: " + str(accuracy) + "\n"
                     log_file.write(current_string)
                     log_file.flush()
                     
@@ -183,6 +179,10 @@ loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = output, l
 # optimizer
 #optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
 optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+
+# Accuracy
+corr = tf.equal(tf.argmax(y,3), tf.argmax(output, 3)) 
+accr = tf.reduce_mean(tf.cast(corr, "float"))
 
 log_file.write("train\n")
 log_file.flush()
