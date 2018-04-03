@@ -182,7 +182,7 @@ loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = output, l
 
 # optimizer
 #optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
-optmizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
 log_file.write("train\n")
 log_file.flush()
