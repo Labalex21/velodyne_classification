@@ -164,7 +164,7 @@ log_file.write("create network\n")
 log_file.flush()
 x, labels, number_batches = fh.read_tfrecord(dir_records, image_shape, batch_size = batch_size,num_epochs=epochs)
 y = tf.reshape(labels, [tf.shape(labels)[0], height, width, 1], name='reshape_labels')
-y = tf.concat([y, y-1],axis = 3)
+y = tf.concat([y, 1-y],axis = 3)
 print("number_batches: ",number_batches)
 current_string = "number batches: " + str(number_batches) + "\n"
 log_file.write(current_string)
