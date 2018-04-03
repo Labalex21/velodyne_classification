@@ -135,10 +135,10 @@ def train():
             print("epoch",e)
             for i in range(total_batch):
                 start2 = time.time()
-                _,current_loss,imgs,preds,l = sess.run([optimizer,loss,x, output, labels])
+                _,current_loss,imgs,preds,l = sess.run([optimizer,loss,x, output, y])
                 
                 # Accuracy
-                corr = tf.equal(tf.argmax(imgs,3), tf.argmax(preds, 3)) 
+                corr = tf.equal(tf.argmax(y,3), tf.argmax(preds, 3)) 
                 accr = tf.reduce_mean(tf.cast(corr, "float"))
                 
                 elapsed = time.time() - start
