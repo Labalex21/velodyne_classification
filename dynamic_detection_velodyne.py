@@ -43,7 +43,7 @@ label_shape = image_shape
 
 # network parameters
 keep_prob = 0.5
-learning_rate = 0.005
+learning_rate = 0.0002
 
 n_features = 32
 patch_size = 3
