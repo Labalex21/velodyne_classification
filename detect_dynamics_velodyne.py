@@ -147,13 +147,12 @@ def export_dynamics():
                 imgs.append(img)
             imgs = np.array(imgs)
             preds = np.array(sess.run([output], feed_dict={x: imgs}))
-
+            preds = np.reshape(preds,[preds.shape[1],img.shape[2],preds.shape[3],img.shape[4]])
             
             k = 0
             for j in range(start_idx,end_idx):
                 filename = dir_export + "pred_labels_" + str(j) + ".txt"
                 with open(filename, 'w') as f:
-                    f.write(str(preds.shape[0]) + " " + str(preds.shape[1]) + " " + str(preds.shape[2]) + " " + str(preds.shape[1]))
                     for r in range(preds.shape[1]):
                         for c in range(preds.shape[2]):
                             f.write("%i,%i,%1.3f\n" % (r, c, preds[k,r,c,0]))
