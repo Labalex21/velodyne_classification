@@ -31,7 +31,7 @@ dir_records = dir_data + "records/"
 path_model = "../data/models/conv_dyn_velodyne.ckpt"
 
 # input data parameters
-epochs = 200
+epochs = 100
 batch_size = 100
 
 # images parameters
