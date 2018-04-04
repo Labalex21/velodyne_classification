@@ -151,6 +151,8 @@ def train():
                 cv2.imwrite(filename_input, imgs[i]*max_dist)
                 cv2.imwrite(filename_labels, l[i,:,:,0]*255)
                 cv2.imwrite(filename_output, preds[i,:,:,0]*255)
+
+            save_path = saver.save(sess, path_model)
                     
          
         coord.request_stop()
