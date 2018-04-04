@@ -25,6 +25,11 @@ def split_image(img, labels):
     
     return new_img, new_labels
 
+def files_in_folder(directory):
+    filenames = glob.glob(os.path.join(directory, '*.*'))
+    filenames.sort(key = natural_keys)
+    return np.array(filenames)
+  
 def write_tfrecord(writer, input, output):
     for i in range(input.shape[0]):
         
