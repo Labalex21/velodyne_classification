@@ -153,6 +153,7 @@ def export_dynamics():
             for j in range(start_idx,end_idx):
                 filename = dir_export + "pred_labels_" + str(j) + ".txt"
                 with open(filename, 'w') as f:
+                    f.write(str(preds.shape[0]) + " " + str(preds.shape[1]) + " " + str(preds.shape[2]) + " " + str(preds.shape[1]))
                     for r in range(preds.shape[1]):
                         for c in range(preds.shape[2]):
                             f.write("%i,%i,%1.3f\n" % (r, c, preds[k,r,c,0]))
