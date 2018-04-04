@@ -22,7 +22,7 @@ log_file.flush()
 #dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
 #dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
 dir_test = "../data/imgs/result_detection/"
-dir_data = "../data/imgs/"
+dir_data = "../data/scans_all/"
 dir_imgs_training = dir_data + "training/"
 dir_labels_training = dir_data + "labels_training/"
 dir_imgs_testing = dir_data + "testing/"
