@@ -93,6 +93,23 @@ def natural_keys(text):
     '''
     return [ atoi(c) for c in re.split('(\d+)', text) ]
     
+def get_velodyne_img(filename):
+    res_az = 0.4*100 # 0.4 deg times 100
+    max_dist = 40
+    img_dist = np.zeros([900,16,3])
+    img_int = np.zeros([900,16,3])
+    with open(filename, 'r') as f:
+        next(f)
+        for line in f:
+            values = [float(x) for x in line.strip().split(',')]
+            if len(values) < 1:
+                continue
+            row = np.mod(900-int(values[5]/res_az)+300,900)
+            col = 15-int((values[6]+15)/2)
+            img_dist[row,col,0:3] = values[4] # distance
+            img_int[row,col,0:3] = values[3] # intensity
+    return img_dist, img_int
+    
 def read_images(directory, max_dist = 80, max_images = -1):
     
     filenames = glob.glob(os.path.join(directory, '*.txt'))
