@@ -157,6 +157,7 @@ def export_dynamics():
                     for r in range(preds.shape[1]):
                         for c in range(preds.shape[2]):
                             f.write("%i,%i,%1.3f\n" % (r, c, preds[k,r,c,0]))
+                k = k+1
 
 log_file.write("create network\n")
 log_file.flush()
