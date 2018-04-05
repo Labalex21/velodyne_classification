@@ -147,7 +147,7 @@ def export_dynamics():
                 imgs.append(img)
             imgs = np.array(imgs)
             preds = np.array(sess.run([output], feed_dict={x: imgs}))
-            preds = np.reshape(preds,[preds.shape[1],img.shape[2],preds.shape[3],img.shape[4]])
+            #preds = np.reshape(preds,[preds.shape[1],img.shape[2],preds.shape[3],img.shape[4]])
             
             k = 0
             for j in range(start_idx,end_idx):
