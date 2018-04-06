@@ -29,7 +29,7 @@ dir_imgs_testing = dir_data + "testing/"
 dir_records = dir_data + "records/"
 dir_export = "../data/imgs/dynamics/"
 #path_model = "D:/Velodyne/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
-path_model = "../data/models/conv_dyn_velodyne.ckpt"
+path_model = "../data/models/conv_dyn_velodyne_50.ckpt"
 
 # input data parameters
 epochs = 200
