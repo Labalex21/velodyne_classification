@@ -21,12 +21,12 @@ log_file.flush()
 
 #dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
 #dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
-dir_test = "../data/imgs/result_detection/"
-dir_data = "../data/imgs/"
+dir_test = "../data/20180201/result_detection/"
+dir_data = "../data/20180201/"
 dir_imgs_training = dir_data + "training/"
 dir_labels_training = dir_data + "labels_training/"
 dir_imgs_testing = dir_data + "testing/"
-dir_records = dir_data + "records/"
+dir_records = dir_data + "records_dyn/"
 #path_model = "D:/Velodyne/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
 path_model = "../data/models/conv_dyn_velodyne_50.ckpt"
 
