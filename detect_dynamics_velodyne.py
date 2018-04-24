@@ -136,7 +136,7 @@ def export_dynamics():
             for j in range(start_idx,end_idx):
                 img,_ = fh.get_velodyne_img(filenames[j])
                 #img = img[:,:]#/max_dist
-                img = np.reshape(img,[img.shape[0],img.shape[1]])
+                #img = np.reshape(img,[img.shape[0],img.shape[1]])
                 imgs.append(img)
             imgs = np.array(imgs)
             preds = np.array(sess.run([output], feed_dict={x: imgs}))
