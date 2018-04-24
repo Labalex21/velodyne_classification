@@ -19,16 +19,9 @@ log_file = open(log_filename,"w")
 log_file.write("start\n")
 log_file.flush()
 
-#dir_data = "D:/Velodyne/20180201_icsens_innenstadt/imgs/"
-#dir_test = "D:/Velodyne/20180201_icsens_innenstadt/imgs/result_detection/"
-dir_test = "../data/imgs/result_detection/"
-dir_data = "../data/scans_all/"
-dir_imgs_training = dir_data + "training/"
-dir_labels_training = dir_data + "labels_training/"
-dir_imgs_testing = dir_data + "testing/"
-dir_records = dir_data + "records/"
-dir_export = "../data/imgs/dynamics/"
-#path_model = "D:/Velodyne/20180201_icsens_innenstadt/models/conv_dyn_velodyne.ckpt"
+dir_data = "../data/20180410/scans_rot_2/"
+dir_records = "../data/20180201/records_dyn/"
+dir_export = "../data/20180410/dynamics/"
 path_model = "../data/models/conv_dyn_velodyne_50.ckpt"
 
 # input data parameters
