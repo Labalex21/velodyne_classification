@@ -19,9 +19,9 @@ log_file = open(log_filename,"w")
 log_file.write("start\n")
 log_file.flush()
 
-dir_data = "../data/20180410/scans_rot_2/"
+dir_data = "../data/20180410/scans_dynamic/"
 dir_records = "../data/20180201/records_dyn/"
-dir_export = "../data/20180410/dynamics/"
+dir_export = "../data/20180410/dynamics_pred/"
 path_model = "../data/models/conv_dyn_velodyne_50.ckpt"
 
 # input data parameters
